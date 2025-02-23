@@ -1,5 +1,5 @@
 import streamlit as st
-st.title("Employee and Intern Categorizer")
+st.title("Employee and Intern Categorizer using Python")
 # Function to categorize employee or intern
 def categorize_person(age, gender):
     if age > 22:
