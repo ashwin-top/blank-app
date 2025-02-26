@@ -65,3 +65,5 @@ if st.session_state.entries:
 if st.button("Reset Data"):
     st.session_state.entries = []
     st.success("All records have been cleared!")
+
+st.write("Made By Ashwin B VI-'B'")
