@@ -48,12 +48,12 @@ if st.button("Check Category"):
             st.error(error)
     else:
         category = "Employee" if age > 22 else "Intern"
-        st.session_state.entries.append({"Name": name, "Age": age, "Category": category})
+        st.session_state.entries.append({"Name": name, "Age": age, "Gender": gender, "Category": category})
         st.success(f"✅ {name} is categorized as a {category}.")
 
 if st.session_state.entries:
     st.subheader("Recorded Data")
-    st.table([{"Name": e["Name"], "Age": e["Age"], "Category": e["Category"]} for e in st.session_state.entries])
+    st.table([{"Name": e["Name"], "Age": e["Age"], "Gender": e["Gender"], "Category": e["Category"]} for e in st.session_state.entries])
 
     total_employees = sum(1 for e in st.session_state.entries if e["Category"] == "Employee")
     total_interns = sum(1 for e in st.session_state.entries if e["Category"] == "Intern")
