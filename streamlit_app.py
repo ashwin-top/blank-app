@@ -1,46 +1,63 @@
 import streamlit as st
+import re
 
 if "entries" not in st.session_state:
     st.session_state.entries = []
 
-def validate_inputs(name, age, gender):
-    if not name.strip():
-        st.error("Please enter your name!")
-        return False
-    if gender == "Select...":
-        st.error("Please select a valid gender!")
-        return False
-    if not (10 <= age <= 75):
-        st.error("Age must be between 10 and 75!")
-        return False
-    return True
+def validate_name(name):
+    return bool(re.match(r"^[A-Za-z\s]+$", name))
 
+def validate_inputs(name, age, gender):
+    errors = []
+    if not name.strip():
+        errors.append("❌ Please enter your name!")
+    elif not validate_name(name):
+        errors.append("❌ Name should contain only letters!")
+
+    if gender == "Select...":
+        errors.append("❌ Please select a valid gender!")
+
+    if not (10 <= age <= 75):
+        errors.append("❌ Age must be between 10 and 75!")
+
+    return errors
 
 st.title("Employee & Intern Tracker")
 st.write("Track employees and interns based on age and gender.")
 
-
 name = st.text_input("Enter your name:", placeholder="Type your full name...")
+if name:
+    st.write("✅ Valid Name" if validate_name(name) else "❌ Invalid Name (Only letters allowed)")
+
 age = st.number_input("Enter your age:", min_value=10, max_value=75, step=1)
+if 10 <= age <= 75:
+    st.write("✅ Valid Age")
+else:
+    st.write("❌ Invalid Age (Must be between 10 and 75)")
+
 gender = st.selectbox("Select your gender:", ["Select...", "Male", "Female"])
+if gender != "Select...":
+    st.write("✅ Gender Selected")
+else:
+    st.write("❌ Please select a gender")
 
 if st.button("Check Category"):
-    if validate_inputs(name, age, gender):
+    errors = validate_inputs(name, age, gender)
+    if errors:
+        for error in errors:
+            st.error(error)
+    else:
         category = "Employee" if age > 22 else "Intern"
-
-  
         st.session_state.entries.append({"Name": name, "Age": age, "Category": category})
-
-       
-        st.success(f"{name} is categorized as a {category}.")
+        st.success(f"✅ {name} is categorized as a {category}.")
 
 if st.session_state.entries:
     st.subheader("Recorded Data")
     st.table([{"Name": e["Name"], "Age": e["Age"], "Category": e["Category"]} for e in st.session_state.entries])
-    
+
     total_employees = sum(1 for e in st.session_state.entries if e["Category"] == "Employee")
     total_interns = sum(1 for e in st.session_state.entries if e["Category"] == "Intern")
-    
+
     st.subheader("Summary")
     st.write(f"Total Employees: {total_employees}")
     st.write(f"Total Interns: {total_interns}")
