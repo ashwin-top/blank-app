@@ -25,18 +25,19 @@ def validate_inputs(name, age, gender):
 st.title("Employee & Intern Tracker")
 st.write("Track employees and interns based on age and gender.")
 
-name = st.text_input("Enter your name:", placeholder="Type your full name...")
+name = st.text_input("Enter your name:", placeholder="Enter only alphabets (e.g., John Doe)")
 if name:
     st.write("✅ Valid Name" if validate_name(name) else "❌ Invalid Name (Only letters allowed)")
 
-age = st.number_input("Enter your age:", min_value=10, max_value=75, step=1)
-if 10 <= age <= 75:
-    st.write("✅ Valid Age")
-else:
-    st.write("❌ Invalid Age (Must be between 10 and 75)")
+age = st.number_input("Enter your age:", min_value=10, max_value=75, step=1, format="%d")
+if age:
+    if 10 <= age <= 75:
+        st.write("✅ Valid Age")
+    else:
+        st.write("❌ Invalid Age (Must be between 10 and 75)")
 
-gender = st.selectbox("Select your gender:", ["Select...", "Male", "Female"])
-if gender != "Select...":
+gender = st.selectbox("Select your gender:", [None, "Male", "Female"], format_func=lambda x: x if x else "Select...")
+if gender:
     st.write("✅ Gender Selected")
 else:
     st.write("❌ Please select a gender")
@@ -48,8 +49,11 @@ if st.button("Check Category"):
             st.error(error)
     else:
         category = "Employee" if age > 22 else "Intern"
-        st.session_state.entries.append({"Name": name, "Age": age, "Gender": gender, "Category": category})
-        st.success(f"✅ {name} is categorized as a {category}.")
+        if not any(e["Name"] == name and e["Age"] == age and e["Gender"] == gender for e in st.session_state.entries):
+            st.session_state.entries.append({"Name": name, "Age": age, "Gender": gender, "Category": category})
+            st.success(f"✅ {name} is categorized as a {category}.")
+        else:
+            st.warning("⚠️ This entry already exists!")
 
 if st.session_state.entries:
     st.subheader("Recorded Data")
@@ -63,7 +67,8 @@ if st.session_state.entries:
     st.write(f"Total Interns: {total_interns}")
 
 if st.button("Reset Data"):
-    st.session_state.entries = []
-    st.success("All records have been cleared!")
+    if st.confirm("Are you sure you want to reset all records?"):
+        st.session_state.entries = []
+        st.success("All records have been cleared!")
 
 st.write("Made By Ashwin B VI-'B'")
