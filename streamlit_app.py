@@ -53,7 +53,8 @@ if st.button("Check Category"):
             st.session_state.entries.append({"Name": name, "Age": age, "Gender": gender, "Category": category})
             st.success(f"✅ {name} is categorized as a {category}.")
         else:
-            st.warning("⚠️ This entry already exists!")
+            st.session_state.entries.append({"Name": name, "Age": age, "Gender": gender, "Category": category})
+            st.success(f"✅ {name} is categorized as a {category}.")
 
 if st.session_state.entries:
     st.subheader("Recorded Data")
