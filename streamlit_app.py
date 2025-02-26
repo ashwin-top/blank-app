@@ -53,8 +53,7 @@ if st.button("Check Category"):
             st.session_state.entries.append({"Name": name, "Age": age, "Gender": gender, "Category": category})
             st.success(f"✅ {name} is categorized as a {category}.")
         else:
-            st.session_state.entries.append({"Name": name, "Age": age, "Gender": gender, "Category": category})
-            st.success(f"✅ {name} is categorized as a {category}.")
+            st.warning("⚠️ This entry already exists!")
 
 if st.session_state.entries:
     st.subheader("Recorded Data")
@@ -68,8 +67,7 @@ if st.session_state.entries:
     st.write(f"Total Interns: {total_interns}")
 
 if st.button("Reset Data"):
-    if st.confirm("Are you sure you want to reset all records?"):
-        st.session_state.entries = []
-        st.success("All records have been cleared!")
+    st.session_state.entries = []
+    st.success("All records have been cleared!")
 
 st.write("Made By Ashwin B VI-'B'")
